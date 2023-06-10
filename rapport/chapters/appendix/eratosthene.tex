@@ -1,0 +1,56 @@
+Le crible d'Ératosthène qui, comme son nom l'indique, a été créé par Ératosthène, est un algorithme qui permet de trouver tous les nombres premiers inférieurs à un entier naturel N. \\
+        
+Le principe de ce crible est de prendre un tableau contenant tous les entiers de 2 a N.
+On commence par rayer tous les multiples de 2 du tableau. 
+On continue en procédant de la même façon avec le premier entier non rayé, ici 3. On continue jusqu'à atteindre $\sqrt{N}$. Tous les éléments non rayés du tableau sont premiers.\\
+
+Voici notre implémentation du crible d'Eratosthène:
+\begin{lstlisting}[language=Python]
+def _smaller_n(n): 
+	res = []
+	i = 0
+	while i <= n:
+		res.append(i)
+		i += 1
+	return res
+    
+def _find_prime(n): 
+    primes = _smaller_n(n)
+    primes[0] = -1
+    primes[1] = -1
+    for i in range(2, utils.isqrt(len(primes)) + 1): 
+        for j in range(i + 1, len(primes)): 
+            if primes[i] != -1 and primes[j] % primes[i] == 0: 
+                primes[j] = -1
+    return primes
+
+def eratosthene(n):
+    tmp = _find_prime(n)
+    res = []
+    for i in range (len(tmp)): 
+        if tmp[i] != -1: 
+            res.append(tmp[i])
+    return res
+\end{lstlisting}
+\vspace{1em}
+
+Nous avons trois fonctions, la première, \lstinline{_smaller_n} qui prend en paramètre un entier \lstinline{n}, et va créer un tableau avec tous les entiers compris entre 0 et n. \\
+La deuxième fonction, \lstinline{_find_prime}, qui prend en paramètre un entier \lstinline{n}, va récupérer le tableau de la précédente fonction et va le parcourir en mettant des $-1$ aux cases avec un indice non premier. \\
+La dernière fonction \lstinline{eratosthene} prend en paramètre n et va renvoyer un tableau avec toutes les valeurs différentes de $-1$ contenues dans le tableau de \lstinline{_find_prime}. \\
+
+\begin{example}
+    Essayons de trouver tous les nombre premiers compris entre 0 et 30.
+    Tout d'abord nous devons créer un tableau contenant tous les entiers entre ces bornes:
+    \[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]\]
+
+    Nous mettons -1 aux indices 0 et 1 car il ne sont pas premiers. Et nous commençons par enlever tous les multiples de 2
+    \[[-1, -1, 2, 3, -1, 5, -1, 7, -1, 9, -1, 11, -1, 13, -1, 15, -1, 17, -1, 19, -1, 21, -1, 23, -1, 25, -1, 27, -1, 29, -1]\]
+    Une fois cela effectué, nous prenons le premier entier différent de -1 et supérieur à notre ancien pivot, ici 3. Nous enlevons ensuite tous ses multiples du tableau
+    \[[-1, -1, 2, 3, -1, 5, -1, 7, -1, -1, -1, 11, -1, 13, -1, -1, -1, 17, -1, 19, -1, -1, -1, 23, -1, 25, -1, -1, -1, 29, -1]\]
+
+    Nous procédons ainsi jusqu'à $\lfloor \sqrt{n} \rfloor = 5$ et nous obtenons:
+    \[[-1, -1, 2, 3, -1, 5, -1, 7, -1, -1, -1, 11, -1, 13, -1, -1, -1, 17, -1, 19, -1, -1, -1, 23, -1, -1, -1, -1, -1, 29, -1]\]
+
+    Une fois fini nous enlevons tous les $-1$ du tableau et nous avons tous les nombres premiers plus petits que 30:
+    \[[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]\]
+\end{example}

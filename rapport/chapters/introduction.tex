@@ -1,0 +1,18 @@
+Le chiffrement RSA tient son nom de ses trois inventeurs, Ronald Rivest, Adi Shamir et Leonard Adleman.
+Il s'agit d'un algorithme de cryptographie asymétrique inventé en 1977. Cet algorithme est utilisé pour sécuriser la transmission de données sur Internet. \\
+
+L'algorithme repose sur le principe mathématique de la factorisation des nombres premiers, plus précisément, sur le fait qu’il est très simple de multiplier deux nombres entiers, alors qu’il est extrêmement difficile de retrouver les deux facteurs si on ne connaît que le produit. Il utilise une paire de clés, représentée par des nombres entiers, composée d'une clé publique pour chiffrer les données et d'une clé privée pour les déchiffrer. La clé publique est accessible à tout le monde, tandis que la clé privée est gardée secrète par le destinataire des données.\\
+
+Le chiffrement RSA est considéré comme sûr car il est très difficile de factoriser de grands nombres premiers en utilisant les algorithmes existants. Il est pratiquement impossible pour une personne ne possédant pas la clé privée de décrypter les données ainsi chiffrées. C'est pourquoi cette technique est utilisée pour protéger par exemple des transactions financières ou bien des communications sensibles sur les réseaux informatiques. \\
+
+Dans ce projet, on étudiera différentes méthodes pour factoriser des nombres. On abordera également un test de primalité, qui permet de détecter si un nombre est premier sans avoir à montrer explicitement qu’il ne possède aucun diviseur non trivial.\\
+
+Nous avons décidé d'implémenter nos algorithmes en Python, car il ne fixe pas de bornes pour la tailles des entiers, à la différence d'un grand nombre de langages de programmation.
+
+\section*{Notation}
+    Dans la suite du rapport on va utilisé les notations suivante:
+    \begin{itemize}
+        \item $\lfloor . \rfloor$ est la  partie entiere inférieur.
+        \item $\mathbb{Z}/2\mathbb{Z}$ est le corps à deux élements, que l'on note $\overline{0}$ et $\overline{1}$.
+        \item $\overline{m}$ désigne la classe de m dans $\mathbb{Z}/2\mathbb{Z}$.
+    \end{itemize}

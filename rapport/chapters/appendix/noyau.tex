@@ -1,0 +1,129 @@
+Pour déterminer les solutions d'un système d'équations, nous allons calculer le noyau d'une matrice M.\\
+Nous commençons par faire un pivot de Gauss pour réduire et échelonner notre matrice.
+Le principe est de choisir un élément pivot dans la matrice, généralement le premier élément non nul de chaque ligne, et de l'utiliser pour éliminer les autres éléments de la colonne en soustrayant ou en ajoutant des multiples de la ligne du pivot aux autres lignes de la matrice. 
+Le processus se poursuit jusqu'à ce que la matrice soit dans une forme échelonnée réduite, où les éléments au-dessus et en dessous de chaque pivot sont tous égaux à 0, et où chaque pivot est égal à 1.
+
+voici notre implémentation du Pivot de Gauss:
+\begin{lstlisting}[language=Python]
+def pivot_de_gauss(mat):
+    for i in range (len(mat)):
+        if mat[i][i] != 1:
+            for j in range (i + 1, len(mat)):
+                if mat[j][i] == 1:
+                    _switch_lines(mat, i, j)
+                    break
+        for j in range (len(mat)):
+            if i == j:
+                continue
+            if mat[j][i] == 1:
+                mat[j] = _xor_lines(mat[i], mat[j])
+    return mat
+\end{lstlisting}
+\vspace{1em}
+La fonction \lstinline{_switch_lines} échange les lignes i et j de la matrice.\\
+La fonction \lstinline{_xor_lines} ajoute deux lignes dans $\mathbb{Z}/2\mathbb{Z}$.\\
+
+Une fois notre matrice échelonnée réduite, il est simple de trouver les solutions.
+Si une colonne i est remplie de zéros, on peut la supprimer de la matrice, et mettre dans la liste des vecteurs du noyau le vecteur qui vaut zéro partout et 1 à la position i.
+Il suffit ensuite d'enlever l'identité, créée en échelonnant la matrice, et de la reporter aux colonnes restantes.
+
+Voici notre implémentation,
+\newpage
+\begin{lstlisting}[language=Python]
+def _add_col_vide(mat, col_vide):
+	if col_vide == []:
+		return _transpose(mat)
+
+	for i in range(len(mat)):
+		for num_col in col_vide:
+			beg = mat[i][:num_col]
+			end = mat[i][num_col:]
+			mat[i] = beg + [0] + end
+
+	res = []
+	for num_col in col_vide:
+		beg = mat[:num_col]
+		end = mat[num_col:]
+		res = beg + _get_line(num_col, len(mat[0])) + end
+
+	return _transpose(res)
+ 
+def resolution(mat):
+	res = []
+	mat = pdg.pivot_de_gauss(mat)
+	(bol, num_col) = _is_col_zero(mat)
+	col_vide = []
+	while (bol == True):
+		col_vide.append(num_col)
+		mat = _remove_col(mat, num_col)
+		(bol, num_col) = _is_col_zero(mat)
+	mat = _remove_id(mat)
+	mat = _add_id(mat)
+	return _add_col_vide(mat, col_vide)
+\end{lstlisting}
+\vspace{1em}
+
+\begin{example}
+    Essayons de trouver le noyau de la matrice :
+    \[\begin{pmatrix}
+        0 & 0 & 1 & 1 & 0 & 1\\
+        0 & 1 & 0 & 0 & 1 & 0\\
+        0 & 0 & 1 & 0 & 1 & 1
+    \end{pmatrix}\]
+    Commençons par faire le pivot de Gauss:\\
+    On voit que la première colonne est remplie de zéros. On cherche donc un pivot sur la deuxième colonne. \\
+    On va alors échanger la première colonne et la deuxième : 
+    \[\begin{pmatrix}
+        0 & 1 & 0 & 0 & 1 & 0\\
+        0 & 0 & 1 & 1 & 0 & 1\\
+        0 & 0 & 1 & 0 & 1 & 1
+    \end{pmatrix}\]
+    Il y a déjà des zéros sur les autres lignes de la deuxième colonne.\\
+    On passe ensuite à la troisième colonne qui a déjà un 1 à la deuxième ligne.
+    Comme on ne veut pas de 1, à la troisième ligne, on va additionner les deux, modulo 2:
+    \[\begin{pmatrix}
+        0 & 1 & 0 & 0 & 1 & 0\\
+        0 & 0 & 1 & 1 & 0 & 1\\
+        0 & 0 & 0 & 1 & 1 & 0
+    \end{pmatrix}\]
+    Maintenant notre matrice est échelonnée, il ne nous reste plus qu'à la réduire en ajoutant à la deuxième ligne, la troisième, toujours modulo 2:
+    \[\begin{pmatrix}
+        0 & 1 & 0 & 0 & 1 & 0\\
+        0 & 0 & 1 & 0 & 1 & 1\\
+        0 & 0 & 0 & 1 & 1 & 0
+    \end{pmatrix}\]
+
+    Voilà notre pivot de Gauss effectué. \\
+    On remarque que la premère colonne est remplie de zéros. 
+    On peut donc la supprimer de la matrice et on ajoutera le vecteur avec le premier élément valant 1 à nos vecteurs appartenant au noyau.\\
+
+    Nous avons maintenant la matrice:
+    \[\begin{pmatrix}
+        1 & 0 & 0 & 1 & 0\\
+        0 & 1 & 0 & 1 & 1\\
+        0 & 0 & 1 & 1 & 0
+    \end{pmatrix}\]
+    On supprime l'identité que nous avons sur les trois premières colonnes:
+    \[\begin{pmatrix}
+        1 & 0\\
+        1 & 1\\
+        1 & 0
+    \end{pmatrix}\]
+    et nous ajoutons l'identité sur les deux dernières lignes:
+    \[\begin{pmatrix}
+        1 & 0\\
+        1 & 1\\
+        1 & 0\\
+        1 & 0\\
+        0 & 1
+    \end{pmatrix}\]
+    Nous avons donc le noyau de la matrice:
+    \[\begin{pmatrix}
+        0 & 0 & 1\\
+        1 & 0 & 0\\
+        1 & 1 & 0\\
+        1 & 0 & 0\\
+        1 & 0 & 0\\
+        0 & 1 & 0
+    \end{pmatrix}\]
+\end{example}

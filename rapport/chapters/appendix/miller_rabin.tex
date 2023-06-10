@@ -1,0 +1,86 @@
+Avant d'essayer de factoriser un entier n, on teste s'il n'est pas premier. 
+Pour cela nous avons décidé d'utiliser le test de primalité probabiliste de Miller Rabin.
+
+\begin{theorem}
+    Soit n un nombre premier impair que l'on décompose sous la forme $n = 2^s \times d + 1$. 
+    Alors n a la propriété suivante: pour tout entier a compris entre 1 et n - 1, alors
+    \begin{itemize}
+        \item ou bien $a^d \equiv 1 [n]$
+        \item ou bien $\exists i$ dans $\left\{1, ..., s - 1\right\}$ tel que $a^{2^i d} \equiv -1 [n]$
+    \end{itemize}
+\end{theorem}
+
+On peut déduire de ce théorème un test probabiliste.
+Soit n, on écrit $n = 2^s \times d + 1$, et a compris entre 1 et n - 1.
+On dit que n passe le test si,
+    \begin{itemize}
+        \item ou bien $a^d \equiv 1 [n]$
+        \item ou bien $\exists i$ dans $\left\{1, ..., s - 1\right\}$ tel que $a^{2^i d} \equiv -1 [n]$
+    \end{itemize}
+
+Voici notre implémentation:
+\begin{lstlisting}[language=Python]
+def _millerrabin(n):
+    if n <= 2: return True
+
+    if n % 2 == 0: return False
+
+    s = 0
+    t = n - 1
+    while 1:
+        if t % 2 == 1: break
+        t //= 2
+        s += 1
+
+    a = random.randint(2, n - 1)
+    b = pow(a, t, n)
+    if b == 1: return True
+
+    for i in range(s):
+        if b == n - 1: return True
+        if b == 1: return False
+        b *= b
+        b %= n
+
+    return False
+\end{lstlisting}
+\vspace{1em}
+Un nombre premier passera le test quel que soit a, mais il y a des entiers composés qui le passeront pour un certain a. 
+Donc si le test nous renvoie que l'entier n'est pas premier, nous sommes sûrs qu'il ne l'est pas. 
+Tandis que s'il nous renvoie qu'il est premier, on a une probabilité de $\frac{1}{2}$ qu'il ne soit pas premier. \\
+
+Pour réduire cette probabilité, on fait passer ce test plusieurs fois avec des entiers a différents. 
+Nous avons décidé de faire passer le test 20 fois car on obtient une probabilité que le nombre ne soit pas premier, si les 20 tests nous indiquent qu'il l'est, de $\frac{1}{2^{20}} \simeq 9 \times 10^-7$. Cette probabilité est suffisamment petite pour nos tests.
+\begin{lstlisting}[language=Python]
+def is_prime(n):
+    nb_test = 20
+    for _ in range(nb_test):
+        if not _millerrabin(n):
+            return False
+    return True
+\end{lstlisting}
+\vspace{1em}
+
+\begin{example}
+    Essayons de voir si 3132433 est premier, \\
+    Tout d'abord décomposons n sous la forme $n = 2^s \times d + 1$, on obtient \[3132433 = 2^4 \times 195777 + 1\]
+    Maintenant on tire un nombre aléatoire entre 2 et $n - 1$ $a = 1168143$
+    on note \[b = a^d ~ [n] = 481284\]
+    
+    Comme b est différent de 1 ou de n - 1 modulo n, on calcule \[b^2 = 265605\] qui est toujours différent de n - 1.
+    Donc on continue 
+    \[b^4 = 492432 \textrm{, }  b^8 = 1371228\]
+    Comme aucun de ces b ne vaut n - 1 modulo n, on en conclut que n n'est pas premier.
+    
+\end{example}
+
+\begin{example}
+    Testons pour n = 242377. \\
+    Nous avons que  \[n = 2^3 \times 30297 + 1.\]
+    Tirons aléatoirement $a = 22254$, on note\\
+    \[b = a^d ~ [n] = 161923\]
+    Comme b est différent de 1 ou de n - 1 modulo n, on calcule,
+    \[b^2 = 168331 \textrm{, } b^4 = 242376.\]
+    On a que $b^4$ = n - 1 modulo n.
+    Par conséquent, n  a une probabilité de $\frac{1}{2}$ d'être premier.
+\end{example}

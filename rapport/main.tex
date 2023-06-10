@@ -1,0 +1,155 @@
+\documentclass[a4paper]{report}
+
+%====================== PACKAGES ======================
+
+\usepackage{fullpage}
+
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+        urlcolor=black,
+}
+
+\usepackage{amsfonts, amsmath, amsthm, mathtools}
+\usepackage{setspace}
+\usepackage{graphicx}
+
+\usepackage{listings, xcolor}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegray},
+    keywordstyle=\color{orange},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    frame=single,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numberstyle=\footnotesize,
+    stepnumber=1,
+    numbersep=10pt, 
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    linewidth=0.83\linewidth,
+    xleftmargin=2cm,
+}
+\lstset{style=mystyle}
+
+\usepackage{theoremref}
+\theoremstyle{plain}
+\newtheorem*{theorem}{Théorème}
+\newtheorem*{definition*}{Définition}
+\newtheorem*{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{example}{Exemple}
+
+%======================== INTRODUCTION ========================
+
+\makeindex
+\onehalfspacing
+\bibliographystyle{prsty}
+
+%======================== DEBUT DU DOCUMENT ===================
+
+\begin{document}
+
+%======================== FIRST PAGE ==========================
+
+    \begin{center}
+    
+        \includegraphics[width=0.5\textwidth]{media/logo_upc.pdf}
+        \vfill
+        {\Large \textsc{Projet mathématiques - Informatique}\par}
+        \vspace{1.5cm}
+        {\huge\bfseries Factorisation des grands nombres\par}
+        \vspace{2cm}
+        {\Large Aggoun Tara, Aziz Ghizlane\par}
+        Encadré par \textsc{Brunat Olivier}
+        \vfill
+        {\large Mai \the\year \par}
+        \vspace{2cm}
+
+    \end{center}
+    
+    \tableofcontents
+    \newpage
+
+%======================== CHAPTERS ==========================
+
+    \chapter*{Introduction}
+    \addcontentsline{toc}{chapter}{Introduction}
+    \input{chapters/introduction}
+
+    \chapter{Méthode des divisions successives}
+    \input{chapters/divisions_successives}
+
+    % \chapter{Méthode p - 1 de Pollard}
+    % \input{chapters/p-1_pollard}
+
+    % \chapter{Méthode rho de Pollard}
+    % \input{chapters/rho_pollard}
+
+    \chapter{Méthode de Fermat}
+    \input{chapters/fermat}
+
+    \chapter{Le crible quadratique}
+    \input{chapters/quadratique}
+
+    % \chapter{Un algorithme optimisé}
+    % \input{chapters/optimisé}
+
+    % \chapter*{Conclusion}
+    % \addcontentsline{toc}{chapter}{Conclusion}
+    % \input{chapters/conclusion}
+
+%======================== APPENDIX ========================
+    \appendix
+
+    \chapter{Le crible d'Ératosthène}
+    \label{Eratosthène}
+    \input{chapters/appendix/eratosthene}
+
+    \chapter{Recherche des entiers B-Friable}
+    \label{B-friabilite}
+    \input{chapters/appendix/friabilite}
+
+    \chapter{Recherche de congruences de carrés}
+    \label{Matrices}
+    \input{chapters/appendix/matrices}
+
+    \chapter{Résolution d'un système d'équations}
+    \label{Noyau}
+    \input{chapters/appendix/noyau}
+
+    \chapter{Test de primalité: Miller Rabin}
+    \label{Miller_Rabin}
+    \input{chapters/appendix/miller_rabin}
+
+    \chapter{Optimalité des algorithmes}
+    \label{Graphique}
+    \input{chapters/appendix/graphique}
+
+    \chapter*{Bibliographie}
+    \addcontentsline{toc}{chapter}{Bibliographie} 
+        \begin{enumerate}
+
+    	\item[[\,1\!\!]] \href{https://www.math.univ-paris13.fr/~boyer/enseignement/crypto/Chap6.pdf}{\textit{Méthodes de factorisation}, KRAUS Alain}
+    	\item[[\,2\!\!]] \href{https://fr.wikipedia.org/wiki/Chiffrement_RSA}{Chiffrement RSA}
+    	\item[[\,2\!\!]] \href{https://fr.wikipedia.org/wiki/Crible_d%27%C3%89ratosth%C3%A8ne}{Crible d'Eratosthene}
+           
+        \end{enumerate}
+
+\end{document}

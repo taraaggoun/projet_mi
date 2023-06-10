@@ -1,0 +1,78 @@
+On se donne une suite de $x_k$ pour lesquels on cherche une sous-famille non vide telle que le produit des image des $x_i$ par le \hyperref[polynome de Kraitchik]{polynôme de Kraitchik} est un carré.\\
+
+Le principe est de récupérer la décomposition en facteurs premiers des différents $x_k$ lors de notre \hyperref[B-friabilite]{recherche des entiers B-friables}. 
+À partir de cela, on crée une matrice, où chaque colonne représente un  des $x_k$, chaque ligne est un des nombres premiers plus petits que B et, dans chaque case, va être inscrite la puissance du facteur modulo 2.\\
+
+Une fois notre matrice créée, nous allons calculer son \hyperref[Noyau]{noyau}. 
+Avec celui-ci, nous prenons un des vecteurs. Si à la position i il y a un 1 c'est que nous devons prendre le $x_i$ tandis que s'il y a un 0 c'est que nous n'en avons pas besoin.\\
+
+Grâce à cela nous avons déterminé les entiers dont nous aurons besoin pour notre factorisation.\\
+
+\begin{proposition}
+    Nous sommes sûr de trouver une solution, si on a $k > \pi(B)$.
+\end{proposition}
+
+\begin{proof}
+    Soit M, la matrice créée.\\
+    Par le théorème du rang, on a \[dim(ker(M)) + dim(Im(M)) = k.\]
+    D'où $\hspace{4.5cm}dim(ker(M)) = k - dim(Im(M))\vspace{2mm}$\\
+    Or $\hspace{6cm}Im(M) \subseteq {(\mathbb{Z}/2\mathbb{Z})}^{\pi(B)}\vspace{2mm}$\\
+    donc $\hspace{5cm}dim(Im(M)) \le \pi(B)\vspace{2mm}$\\
+    Ainsi $\hspace{6cm}-\pi(B) \le - dim(Im(M))\vspace{2mm}$\\
+    et $\hspace{6cm}k - \pi(B) \le k - dim(Im(M))\vspace{2mm}$\\
+    Finalement $\hspace{4cm}dim(ker(M)) \geq k - \pi(B) > 0\vspace{2mm}$\\
+    Il y a donc bien des solutions non triviales.
+\end{proof}
+
+Voici notre implémentation de la recherche de congruences carrées:
+\begin{lstlisting}[language=Python]
+def _find_2_divider(n, primes, k):
+	(x_k, q_x_k) = _find_friables(n, primes, k)
+	mat = _create_mat(q_x_k, primes)
+	sols = resolution.resolution(mat)
+	(fct1, fct2) = (1, 1)
+	for sol in sols:
+		u = []
+		v2 = []
+		for i in range(len(sol)):
+			if sol[i] == 1:
+				u.append(x_k[i])
+				v2.append(q_x_k[x_k[i]])
+		v = _sqrt_v(v2)
+		(fct1, fct2) = kraitchik.Kraitchik(n, u, v)
+		if (fct1 != 1 and fct1 != n) or (fct2 != 1 and fct2 != n):
+			break
+	fct1 = 1 if fct1 == 1 or fct1 == n else fct1
+	fct2 = 1 if fct2 == 1 or fct2 == n else fct2
+	return (fct1, fct2)
+\end{lstlisting}
+\vspace{1em}
+La fonction \lstinline{_find_friables} renvoie un tableau contenant les entiers tels que leurs carrés sont B-friables et la décomposition en facteurs premiers de leurs carrés. \\
+À partir de cette décomposition, nous pouvons créer la matrice, puis la résoudre.
+Ensuite, on parcourt les différents vecteurs des solutions trouvées pour pouvoir en extraire des facteurs.
+
+\begin{example}
+    Prenons, n = 2041.\\ 
+    Nous avons B = 7 donc primes = $[2, 3, 5, 7]$ et k = 5.\\
+    On trouve six entiers 7-friables: $[46, 47, 49, 51, 53, 54]$
+    avec la décomposition de leurs carrés: \[{46:\{3: 1, 5: 2\}, 47:\{2: 3, 3: 1, 7: 1\}, 49:\{2: 3, 3: 2, 5: 1\},51: \{2: 4, 5: 1, 7: 1\},53: \{2: 8, 3: 1\},54: \{5: 3, 7: 1\}}\]
+    Avec ça nous en déduisons la matrice suivante, en mettant modulo 2 les puissances:
+    \[\begin{pmatrix}
+        0 & 1 & 1 & 0 & 0 & 0\\
+        1 & 1 & 0 & 0 & 1 & 0\\
+        0 & 0 & 1 & 1 & 0 & 1\\
+        0 & 1 & 0 & 1 & 0 & 1
+    \end{pmatrix}\]
+    En calculant le noyau on trouve:
+    \[\begin{pmatrix}
+        1 & 1\\
+        0 & 1\\
+        0 & 1\\
+        0 & 0\\
+        1 & 0\\
+        0 & 1
+    \end{pmatrix}\]
+
+    Nous avons donc deux possibilités pour trouver une factorisation.
+    On peut soit utilser notre premier et notre cinquième entiers, soit utilisé notre premier, deuxième, troisième et sixième entiers
+\end{example}

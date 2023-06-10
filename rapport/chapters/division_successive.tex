@@ -1,0 +1,72 @@
+Soit n le nombre que nous cherchons à factoriser.
+La méthode de divisions successives cherche à déterminer le plus petit diviseur p de n.
+Cette méthode est dite naïve car elle consiste à diviser n par tous les nombres premiers plus petits que $\sqrt{n}$ jusqu'à en trouver un qui divise n.
+
+\begin{theorem}[Théorème des nombres premiers]
+\label{Theoerme des nombre premier}
+    Soit $\pi(x)$ la fonction qui associe à un réel x le nombre de nombres premiers inférieurs ou égaux à x, quand x tend vers +$\infty$ on a:
+    \[\pi(x) \sim \frac{x}{ln(x)}\]
+\end{theorem}
+
+Afin de déterminer p, il va falloir effectuer $\pi(\sqrt{n})$ divisions, étant donné que p est majoré par $\sqrt{n}$. On aura donc au maximum $\frac{\sqrt{n}}{log(\sqrt{n})} = \frac{2\sqrt{n}}{log(n)}$ divisions.
+La recherche des nombres premiers se fait grâce au \hyperref[Eratosthène]{Crible d'Eratosthène}. \\
+
+Cette approche est inefficace par rapport aux autres méthodes de factorisation dont on dispose aujourd’hui. 
+Mais elle reste quand même indispensable pour trouver de petits facteurs. En effet environ 92\% des entiers ont un diviseur premier plus petit que 1000. \\
+
+Voici, notre implémentation de cette algorithme:
+\begin{lstlisting}[language=Python]
+def _smaller_divider(primes, n):
+    for i in range (len(primes)):
+        if n % primes[i] == 0:
+            return primes[i]
+    return n
+\end{lstlisting}
+\vspace{1em}
+
+Nous avons une fonction, \lstinline{_smaller_divider} qui prend deux arguments, \lstinline{primes} qui est un tableau contenant tous les nombres premiers plus petits ou égaux à $\lfloor \sqrt{n} \rfloor + 1$ déterminés grace au \hyperref[Eratosthène]{Crible d'Eratosthène}, et \lstinline{n} qui est notre nombre à factoriser.
+Nous parcourons donc le tableau de nombres premiers et si on trouve un entier qui divise n, on le retourne. Si à la fin de notre parcours on n'a pas trouvé de diviseur de n, cela implique que n est premier. \\
+
+Pour pouvoir récupérer tous les facteurs premiers, nous avons implémenté une fonction qui va appeler \lstinline{_smaller_divider} itérativement jusqu'à avoir trouvé tous les facteurs premiers de n.
+
+\newpage
+\begin{lstlisting}[language=Python]
+def all_divider(n):
+    i = 0
+    facteurs = {}
+    diviseur = ce.eratosthene(utils.isqrt(n) + 1)
+    while (i != n):
+        i = _smaller_divider(diviseur, n)
+        if i != 1:
+            facteurs[i] = facteurs.get(i, 0) + 1
+        n //= i
+    if i == n and i != 1:
+        if i in facteurs:
+            facteurs[i] = facteurs.get(i, 0) + 1
+    return facteurs
+\end{lstlisting}
+\vspace{1em}
+Nous avons une fonction \lstinline{_all_divider}, qui prend en paramètre \lstinline{n}, notre entier à factoriser.
+Nous commençons par récupérer tous les nombres premiers entre 2 et $\lfloor \sqrt{n} \rfloor + 1$.
+On récupère les différents diviseurs de n un par un en appelant \lstinline{_smaller_divider}, jusqu'à ce qu'on détecte qu'on les a tous trouvés.
+
+\begin{example}
+    Essayons de factoriser n = 286,\\
+    La liste des nombres premiers plus petits que $\lfloor \sqrt{n} \rfloor = 17$ est: $[2, 3, 5, 7, 11, 13]$ \\
+    En divisant successivement n, par tous les entiers de ce tableau, on trouve que le plus petit diviseur de 286 est 2. \\
+    On a que : \[286 = 2 \times 143\]
+    Nous allons donc passer à l'itération suivante avec n = 143\\
+    Nous avons que la liste des nombres premiers plus petits que $\lfloor \sqrt{n} \rfloor = 11$ est : [2, 3, 5, 7, 11] \\
+    En divisant successivement n par tous les entiers de ce tableau, on trouve que le plus petit diviseur de 143 est 11. \\
+    On en conclut que :
+        \[143 = 11 \times 13\]
+    étant donné que 13 est premier.
+
+\end{example}
+
+\begin{example}
+    Nous arrivons aussi à détecter que 97 est premier grâce à cette méthode.\\
+    En effet, la liste des nombres premiers plus petits que $\lfloor \sqrt{n} \rfloor = 9$ est: $[2, 3, 5, 7]$.\\
+    En divisant successivement n par tous les entiers de ce tableau, on trouve qu'aucun d'entre eux ne divise n.\\
+    On en conclut que 97 est premier.
+\end{example}

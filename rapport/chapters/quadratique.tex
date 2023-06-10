@@ -1,0 +1,128 @@
+La principe du crible quadratique a été inventée par C. Pomerance en 1981. 
+C’est aujourd’hui la méthode la plus couramment utilisée pour factoriser des entiers n qui n’ont pas de diviseurs premiers significativement plus petits que $\sqrt{n}$. 
+Elle ne dépend en fait que de la taille de n, et non de propriétés arithmétiques particulières de ses diviseurs premiers.\\
+
+Afin de factoriser n, on recherche des congruences modulo n entre carrés, c'est-à-dire que l'on cherche des entiers dont la différence de leurs carrés soit un multiple de n, et ne vaut pas n.
+Supposons que l'on ait deux entiers u et v tels que: \[u^2 \equiv v^2 [n] ~ avec ~ u \not\equiv \pm v [n]\textrm{.}\]
+Dans ce cas, on peut obtenir très simplement une factorisation de n, vu que n divise $(u - v)(u + v)$ sans diviser $u - v$ ni $u + v$. Le calcul des entiers \[pgcd(u - v, n) ~ et ~ pgcd(u + v, n)\] fournit alors des diviseurs non triviaux de n.\\
+
+\begin{definition*}\label{polynome de Kraitchik}
+
+On introduit alors le polynôme de Kraitchik, \[Q(X) = X^2 - n \in \mathbb{Z}[X]\]
+    
+\end{definition*}
+
+\begin{definition*}[friabilité]\label{friable}
+    Soit B un entier naturel. On dit qu'un entier est B-friable si tous ses diviseurs premiers sont inférieurs ou égaux à B.\\
+    
+\end{definition*}
+Le but va être de trouver une suite d'entiers $x_1, ~ ..., ~ x_k$ avec  $k > \pi(B)$ tel que $Q(x_1), ~ ..., ~ Q(x_k)$ sont B-friables et 
+\[Q(x_1) ~ ... ~ Q(x_k) = v^2 ~ ou ~ v\in \mathbb{N}\] et \[u = x_1 ~ ... ~ x_k.\]
+On a alors \[u^2 \equiv (x_i^2 - n) ~ ... ~ (x_k^2 - n) = Q(x_1) ~ ... ~ Q(x_k) = v^2 ~ [n].\]
+De plus, il y a une grande probabilité que $u \not\equiv \pm v$ \\
+
+La difficulté est donc de trouver ces $x_k$. 
+Pour cela, nous allons commencer par déterminer quelle valeur prendre pour notre B de la B-friabilité. Si B est trop petit, cela risque d'être compliqué de conclure car on n'est pas sûr de parvenir à expliciter un seul entier x qui soit B-friable. Si B est trop grand, il faudra un très grand nombre de x, et on n'est pas sûr d'en trouver assez. Il faut trouver un juste milieu.
+Le comportement asymptotique de B en fonction de n incite à choisir: \[B = exp(\frac{1}{2}\sqrt{log(n)log(log(n))})\]
+
+Une fois que l'on a déterminé B, on cherche k entiers B-friables grâce à la \hyperref[B-friabilite]{méthode de recherche des entiers B-friables}.\\
+
+Une fois que l'on a trouvé notre suite $x_k$ d'entiers, il va falloir choisir lesquels d'entre eux nous seront utiles pour la factorisation de n. Pour cela, nous allons appliquer le principe de la \hyperref[Matrices]{recherche de congruences de carrés}.\\
+
+\begin{proof}
+    Notons $p_1, ~ ..., ~ p_{\pi(B)}$ les nombres premiers inférieurs ou égaux à B.\\
+    $\forall ~ 1 \leq j \leq k$, on a,
+    \[Q(x_j) = \prod\limits_{i=1}^{\pi(B)} {p_i}^{n_{ij}} \textrm{, avec } n_{ij} \in \mathbb{N}\]
+    on pose
+    \begin{align*}
+        \prod\limits_{j=1}^{k} Q(x_j) = \prod\limits_{j=1}^k {\prod\limits_{i=1}^{\pi(B)} {p_i}^{n_{ij}}}\\
+        = \prod\limits_{i=1}^{\pi(B)} {{\prod\limits_{j=1}^k {p_i}^{n_{ij}}}}\\
+        = \prod\limits_{i=1}^{\pi(B)} {{p_i}^{\sum\limits_{j=1}^k {n_{ij}}}}
+    \end{align*}
+ 
+    En particulier, $\prod\limits_{j=1}^{k} Q(x_j)$ est un carré ssi $\sum\limits_{i=1}^k {n_{ij}} \equiv 0 [2], ~ \forall ~ 1 \leq j \leq \pi(B)$\\
+    
+    ssi $\forall ~ 1 \leq j \leq \pi(B), ~ \sum\limits_{i=1}^k {\overline{n_{ij}}} = \overline{0}$, où $\overline{0}$ désigne la classe de 0 dans $\mathbb{Z}/2\mathbb{Z}$.
+    
+    Introduisons la matrice $M = (\overline{n_{ij}}) \in M_{\pi(B),k} ~ (\mathbb{Z}/2\mathbb{Z})$, la matrice contenant les puissances modulo 2 des $Q(x_i)$.\\
+    Soit $X = 
+    \begin{pmatrix}
+        \alpha_1 \\ ... \\ \alpha_k
+    \end{pmatrix}
+    \in (\mathbb{Z}/2\mathbb{Z})^k$ tel que $X \in ker(M)$\\
+    On a alors $\sum\limits_{j=1}^k {\alpha_j ~ \overline{n_{ij}}} = \overline{0}, ~ \forall ~ 1 \leq i \leq \pi(B)$.\\
+    Notons $J = \left\{ j \in \left\{1, ..., k\right\} | \alpha_j = \overline{1} \right\}.$
+    Alors \begin{align*}
+        \sum\limits_{j=1}^k {\alpha_j \overline{n_{ij}}} = \overline{0} &\Longleftrightarrow \sum\limits_{j\in J} {\overline{n_{ij}}} = \overline{0} ~ \forall ~ 1 \leq i \leq \pi(B)\\
+        &\Longleftrightarrow \sum\limits_{j\in J} {n_{ij}} ~ est ~ pair ~ \forall ~ 1 \leq i \leq \pi(B)\\
+        &\Longleftrightarrow ~ \forall ~ 1 \leq i \leq \pi(B), ~ \exists ~ q_i \in \mathbb{N} ~ tq ~ \sum\limits_{j \in J} {n_{ij}} = 2 q_i
+    \end{align*}
+    Posons $u_J = \prod\limits_{j \in J} {x_j}$ et $v_J = \prod\limits_{i=1}^{\pi(B)} {{p_i}^{q_i}}$.\\
+    On a alors 
+    \begin{align*}
+        {u_J}^2 = \prod\limits_{j\in J} {{x_j}^2} &\equiv \prod\limits_{j\in J} {Q(x_j) [n]}\\
+        &\equiv \prod\limits_{i=1}^{\pi(B)} {{p_i}^{\sum\limits_{j \in J} {n_{ij}}} [n]}\\
+        &\equiv \prod\limits_{i=1}^{\pi(B)} {{p_i}^{2q_i} [n]}\\
+        &\equiv (\prod\limits_{i=1}^{\pi(B)} {{p_i}^{q_i})^2 [n]}\\
+        &\equiv {v_J}^2 [n]
+    \end{align*}
+    Ainsi, à tout élément $X \in ker(M)$, on est en mesure d'associer deux éléments $u_J$ et $v_J$ tq ${u_J}^2 \equiv {v_J}^2 [n],$\\
+    et qui ont une chance d'être tels que $u_J \not\equiv v_J [n]$
+\end{proof}
+
+Une fois que l'on a déterminé lesquels de nos $x_k$ nous seront utiles, on a enfin trouvé une factorisation de n, car nous avons \[v = \sqrt{Q(x_1) ~ ... ~ Q(x_k)}\] ainsi que: \[u = x_1 ~ ... ~ x_k\]
+par ailleurs, au moins un de: \[pgcd(u - v, n) ~ et ~ pgcd(u + v, n)\] est un facteur de n. \\
+
+Voici notre implémentation:\\
+
+Nous avons une fonction \lstinline{_divider} qui prend en paramètre \lstinline{n}, le nombre à factoriser, et qui va chercher deux diviseurs non triviaux de n. 
+Cette fonction utilise \lstinline{find_b} qui renvoie le B adéquat en fonction de n, \lstinline{eratosthene}, qui utilise \hyperref[Eratosthène]{le crible d'Eratosthène} pour trouver les nombres premiers inférieurs à B, et \lstinline{_find_2_divider} qui est expliqué dans \hyperref[Matrices]{l'annexe C}.
+\clearpage
+\begin{lstlisting}[language=Python]
+def _divider(n):
+    b = utils.find_b(n)
+    primes = ce.eratosthene(b)
+    k = len(primes) + 1
+    (fct1, fct2) = (1, 1)
+    while(1):
+        (fct1, fct2) = _find_2_divider(n, primes, k)
+	if fct1 != 1 or fct2 != 1:
+		break
+	k += 1
+    return (fct1, fct2)
+\end{lstlisting}
+\vspace{1em}
+
+\begin{example}
+    Essayons de factoriser 2041.\\
+    On commence par chercher B. On trouve B = 7.\\
+    et tous les nombres premiers inférieurs ou égaux à B sont
+    \[[2, 3, 5, 7]\]
+    On cherche donc k > $\pi(7) = 4$. \\
+    On trouve donc grâçe à la \hyperref[B-friabilite]{recherche des entiers B-Friables} 6 entiers, dont leurs images par le \hyperref[polynome de Kraitchik]{polynôme de Kraitchik} sont 7-friables.
+    \[[46, 47, 49, 51, 53, 54]\]
+    avec leurs images
+    \[75 = 3 \times 5^2, ~ 168 = 2^3 \times 3 \times 7, ~ 360 = 2^3 \times 3^2 \times 5, ~ 560 = 2^4 \times 5 \times 7, ~ 768 = 2^8 \times 3, ~ 875 = 5^3 \times 7\]
+
+    À partir de ces 6 entiers et de la \hyperref[Matrices]{recherche de congruences de carrés.}
+    On trouve cette matrice
+
+    \[\begin{pmatrix}
+    0 & 1 & 1 & 0 & 0 & 0\\
+    1 & 1 & 0 & 0 & 1 & 0\\
+    0 & 0 & 1 & 1 & 0 & 1\\
+    0 & 1 & 0 & 1 & 0 & 1
+    \end{pmatrix}\]
+
+    dont le noyau est engendré par
+    \[\begin{pmatrix} 1\\ 0\\ 0\\ 0\\ 1\\ 0\end{pmatrix} \textrm{ , } \begin{pmatrix} 1\\ 1\\ 1\\ 0\\ 0\\ 1\end{pmatrix}\textrm{.}\]
+
+    Nous allons utiliser le premier vecteur, On doit ainsi utiliser notre premier entier qui est 46 et le 5eme qui est 53.
+    On a \[u = 46 \times 53 = 2438\]
+    et \[v^2 = 75 \times 768 = 2^8 \times 3^2 \times 5^2\]
+    Donc \[v = 2^4 \times 3 \times 5 = 240\]
+    on a ainsi \[u + v = 2678 ~ et ~ u - v = 2198\]
+    on calcule \[pgcd(2678, 2041) = 13 ~ et ~ pgcd(2198, 2041) = 157\]
+    on en conclut que \[2041 = 13 \times 157\]
+    Avec le \hyperref[Miller_Rabin]{test de primalité Miller Rabin} on trouve que 13 et 157 sont premiers, on a donc fini.
+\end{example}

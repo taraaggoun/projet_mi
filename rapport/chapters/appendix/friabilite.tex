@@ -1,0 +1,50 @@
+Pour la recherche des entiers \hyperref[friable]{B-friables} de l'intervalle [1, X], on construit au départ un tableau contenant tous les entiers entre 1 et X. 
+Pour chaque nombre premier $p \leq B$, on parcourt le tableau, en commençant avec l’entier p et, en effectuant successivement des pas de longueur p, on divise par p tous les entiers possibles dans le tableau, qui ne sont autres que les multiples de p plus petits que X. 
+On obtient alors un nouveau tableau d’entiers entre 1 et X qui diffère du précédent seulement aux cases d’entiers multiples de p. 
+En commençant avec l’entier p, qui est maintenant à la case $p^2$, et en effectuant successivement des pas de longueur $p^2$, on divise de nouveau par p tous les entiers possibles du nouveau tableau. 
+On procède de même jusqu’à la plus grande puissance de p inférieure à X. 
+Lorsque l’on a effectué ce processus pour tous les nombres premiers $p \leq B$, on obtient un tableau dans lequel les cases où se trouvent le chiffre 1 sont exactement celles du départ des entiers B-friables.\\
+
+Dans notre implémentation de la recherche des entiers B-friable, on a dû procéder d'une façon analogue. Nous recherchons, pour un entier, s'il est B-friable.
+Pour cela, on prend un entier naturel n et, pour chaque nombre premier $p \leq B$, on divise n par p jusqu'à ce que n ne soit plus un multiple de p. Une fois cela accompli, pour chaque p, si n vaut 1, il est B-Friable, sinon il ne l'est pas.
+
+Voici notre implémentation:
+\begin{lstlisting}[language=Python]
+def is_friable(n, primes): 
+    facteurs = {}
+    cur = n
+    for prime in primes:
+        while cur % prime == 0:
+	   cur = cur // prime
+	   if prime in facteurs:
+	       facteurs[prime] += 1
+	   else :
+	       facteurs[prime] = 1
+	   if cur == 1:
+	       return (True, facteurs)
+    return (False, {})
+\end{lstlisting}
+\vspace{1em}
+
+Nous avons donc \lstinline{is_friable} qui prend un entier n et un tableau de nombres premiers \lstinline{primes}, et qui, pour chaque nombre premier dans primes, va enlever toutes les puissances de ce nombre à n.
+Cette fonction renverra \lstinline{True} et sa décomposition en facteurs premiers s'il est friable et \lstinline{False} avec le dictionnaire vide sinon.
+
+\begin{example}
+Essayons de trouver tous les entiers 10-friables entre 2 et 30: 
+\[[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]\]
+On va diviser une première fois par 2,
+\[[1, 3, 2, 5, 3, 7, 4, 9, 5, 11, 6, 13, 7, 15, 8, 17, 9, 19, 10, 21, 11, 23, 12, 25, 13, 27, 14, 29, 15]\]
+Puis encore jusqu'à ce qu'il n'y est plus de puissances de 2 dans le tableau
+\[[1, 3, 1, 5, 3, 7, 1, 9, 5, 11, 3, 13, 7, 15, 1, 17, 9, 19, 5, 21, 11, 23, 3, 25, 13, 27, 7, 29, 15]\]
+On continue avec le premier entier différent de 1, ici 3:
+\[[1, 1, 1, 5, 1, 7, 1, 1, 5, 11, 1, 13, 7, 5, 1, 17, 1, 19, 5, 7, 11, 23, 1, 25, 13, 27, 7, 29, 5]\]
+puis avec 5
+\[[1, 1, 1, 1, 1, 7, 1, 1, 1, 11, 1, 13, 7, 1, 1, 17, 1, 19, 1, 7, 11, 23, 1, 1, 13, 27, 7, 29, 1]\]
+
+Et enfin avec 7
+\[[1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1, 13, 1, 1, 1, 17, 1, 19, 1, 1, 11, 23, 1, 1, 13, 1, 1, 29, 1]\]
+
+On en conclut que,
+\[[11, 13, 17, 19, 22, 23, 26, 29]\]
+sont les seuls entiers non 10-friable entre 2 et 30.
+\end{example}
