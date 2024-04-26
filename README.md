@@ -17,10 +17,10 @@ montrer explicitement qu’il ne possède aucun diviseur non trivial.
 
 **Identifiants et membres du groupe**
 
-|  Name   | First name    | Student number |
-|:-------:|:-------------:|:--------------:|
-| Aggoun  |     Tara      |    21961069    |
-|  Aziz   |   Ghizlane    |    21965976    |
+|  Name   | First name    |
+|:-------:|:-------------:|
+| Aggoun  |     Tara      |
+|  Aziz   |   Ghizlane    |
 
 ----------------------------------------------------------------------
 
